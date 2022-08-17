@@ -1,19 +1,17 @@
 import type { NextPage } from 'next';
-import styles from '../styles/index.module.scss';
+import Link from 'next/link';
 
 const Home = () => {
   return (
-    <>
-      <h1 className={styles.testh1}>AHOJ Martine</h1>
-      <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloribus ipsam
-        sunt aliquid voluptatem quibusdam perferendis aspernatur, sapiente
-        itaque? Unde laborum quis maxime dicta eum numquam laboriosam cum
-        deleniti sit ex ea harum minima, ducimus ratione. Inventore sequi, velit
-        quas alias, magnam officiis vel atque dignissimos perspiciatis corporis
-        itaque enim dolores.
-      </p>
-    </>
+    <div className='indexPage fl-row-center-center'>
+      <div className='landing-header fl-col-center-center'>
+        <h1>Nadpis index.tsx</h1>
+        <h3 className=''>Podnadpis index.tsx</h3>
+        <Link href='/products'>
+          <i className='btn-primary'>Naše produkty</i>
+        </Link>
+      </div>
+    </div>
   );
 };
 

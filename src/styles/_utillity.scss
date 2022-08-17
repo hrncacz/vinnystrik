@@ -1,0 +1,98 @@
+@import 'config';
+
+.px-1 {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+.px-2 {
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+.px-3 {
+  padding-left: 3rem;
+  padding-right: 3rem;
+}
+.px-4 {
+  padding-left: 4rem;
+  padding-right: 4rem;
+}
+.py-1 {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+.py-2 {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+.py-3 {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+.py-4 {
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+}
+
+.fl-col-center-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.fl-col-center-top {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+.fl-col-left-center {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+.fl-row-center-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+%btn-shared {
+  display: inline-block;
+  padding: 1rem 1.5rem;
+  border: none;
+  border-radius: 5px;
+  transition: all 0.5s;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btn {
+  &-primary {
+    @extend %btn-shared;
+    background: $primary-color;
+    color: $light-color;
+  }
+  &-secondary {
+    @extend %btn-shared;
+    background: $secondary-color;
+    color: $dark-color;
+  }
+  &-dark {
+    @extend %btn-shared;
+    background: $dark-color;
+    color: $light-color;
+  }
+  &-light {
+    @extend %btn-shared;
+    background: $light-color;
+    color: $dark-color;
+  }
+}
+
+button[class^='btn-']:hover,
+a[class^='btn-']:hover,
+input[class^='btn-']:hover {
+  background: $secondary-color;
+  color: $dark-color;
+}
