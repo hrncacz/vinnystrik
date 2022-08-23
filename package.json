@@ -9,12 +9,18 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@react-spring/parallax": "^9.5.2",
+    "@types/react-transition-group": "^4.4.5",
+    "framer-motion": "^7.2.0",
     "next": "12.2.5",
     "next-auth": "^4.10.3",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "react-spring": "^9.5.2",
+    "react-transition-group": "^4.4.5"
   },
   "devDependencies": {
+    "@react-spring/types": "^9.5.2",
     "@types/node": "18.7.2",
     "@types/react": "18.0.17",
     "@types/react-dom": "18.0.6",
