@@ -25,7 +25,7 @@ const Navbar = () => {
             <Link href='/contacts'>KONTAKTY</Link>
           </li>
           <li>
-            <Link href='/clients'>ZÁKAZNICKÁ SEKCE</Link>
+            <Link href='/client-portal'>ZÁKAZNICKÁ SEKCE</Link>
           </li>
         </ul>
       </div>
