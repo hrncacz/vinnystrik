@@ -1,6 +1,20 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-  reactStrictMode: true,
-}
 
-module.exports = nextConfig
+module.exports = {
+  async redirects() {
+    return [
+      {
+        source: '/customer',
+        missing: [
+          {
+            type: 'cookie',
+            key: 'session',
+          },
+        ],
+        permanent: false,
+        destination: '/auth',
+      },
+    ];
+  },
+  reactStrictMode: true,
+};
