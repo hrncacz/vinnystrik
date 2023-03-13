@@ -5,6 +5,7 @@ import { Inter } from 'next/font/google';
 import Navbar from '@/components/Navbar';
 import { GetServerSideProps } from 'next';
 import Cookies from 'cookies';
+import Link from 'next/link';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -19,6 +20,14 @@ export default function Home() {
       </Head>
       <main className='h-screen w-screen bg-slate-400'>
         <Navbar></Navbar>
+        <div className='w-full h-full flex flex-col justify-center items-center'>
+          <Link
+            className='py-4 px-8 font-medium bg-slate-50 rounded-md'
+            href='/auth'
+          >
+            LOG IN
+          </Link>
+        </div>
       </main>
     </>
   );
