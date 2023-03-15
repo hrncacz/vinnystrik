@@ -1,10 +1,9 @@
-import Head from 'next/head';
-import Image from 'next/image';
 import { Inter } from 'next/font/google';
 import Navbar from '@/components/Navbar';
 import { GetServerSideProps } from 'next';
-import Link from 'next/link';
 import Cookies from 'cookies';
+import { OutputGetAuth } from '../api/auth';
+import { useState } from 'react';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -15,6 +14,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 };
 
 export default function Auth() {
+  const [loginData, setLoginData] = useState<OutputGetAuth>({
+    name: null,
+    message: null,
+  });
+
+  const login = async () => {};
+
   return (
     <>
       <main className='h-screen w-screen bg-slate-200'>

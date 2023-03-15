@@ -3,11 +3,14 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { PrismaClient } from '@prisma/client';
 import * as argon2 from 'argon2';
 import Cookies from 'cookies';
+import { z } from 'zod';
 
-type OutputGetAuth = {
-  name: string | null;
-  message: string | null;
-};
+const OutputGetAuth = z.object({
+  name: z.string().email().nullable(),
+  message: z.string().nullable(),
+});
+
+export type OutputGetAuth = z.infer<typeof OutputGetAuth>;
 
 type InputGetAuth = {
   username: string;
@@ -28,7 +31,7 @@ const prisma = new PrismaClient();
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<OutputGetAuth>
+  res: NextApiResponse
 ) {
   if (req.method === 'GET') {
     return await authGet(req, res);
@@ -64,6 +67,7 @@ const authGet = async (
       .status(400)
       .json({ name: null, message: 'Missing authentication headers!' });
   }
+
   if (
     Array.isArray(inputData[emailHeaderName]) ||
     Array.isArray(inputData[passwordHeaderName])
@@ -95,8 +99,8 @@ const authGet = async (
   if (result) {
     const compare = await argon2.verify(result.passwdHash, passwd);
     if (compare === true) {
-      cookies.set('sessionToken', '123456', { maxAge: 60000 });
-      const createSession = await prisma.session.create({
+      cookies.set('session-token', '123456', { maxAge: 60000 });
+      await prisma.session.create({
         data: { sessionUuid: '123456', userId: result.id },
       });
       return res.status(200).json({ name: result.email, message: null });
@@ -115,7 +119,7 @@ const authPost = async (
   const emailHeaderName = 'auth-email';
   const passwordHeaderName = 'auth-passwd';
   const inputData = req.headers;
-  const sessionToken = cookies.get('sessionToken');
+  const sessionToken = cookies.get('session-token');
 
   if (
     !inputData[emailHeaderName] ||
@@ -139,6 +143,7 @@ const authPost = async (
   const isAdmin = await prisma.session.findFirst({
     where: { sessionUuid: sessionToken },
   });
+
   if (!isAdmin || isAdmin.userId !== 1) {
     return res.status(401).json({
       name: null,
@@ -148,7 +153,6 @@ const authPost = async (
 
   const email = inputData[emailHeaderName];
   const passwd = inputData[passwordHeaderName];
-
   const passwdHash = await argon2.hash(passwd);
   const result = await prisma.users.create({
     data: {
@@ -156,6 +160,7 @@ const authPost = async (
       passwdHash: passwdHash,
     },
   });
+
   if (result) {
     return res.status(200).json({ name: result.email, message: null });
   } else {
