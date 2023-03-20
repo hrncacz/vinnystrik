@@ -11,7 +11,7 @@ const inter = Inter({ subsets: ['latin'] });
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const cookies = new Cookies(context.req, context.res);
-  cookies.set('session', 'nejakaHodniota', { maxAge: 60 * 1000 });
+  const sessionToken = cookies.get('session-token');
   return { props: { data: 'test' } };
 };
 
@@ -22,14 +22,12 @@ export default function Auth() {
   });
 
   return (
-    <>
-      <main className='h-screen w-screen bg-slate-200'>
-        <Navbar></Navbar>
-        <div className='w-full h-full flex flex-col justify-center items-center'>
-          {/* <LoginForm></LoginForm> */}
-          <LoginFormWithHooks></LoginFormWithHooks>
-        </div>
-      </main>
-    </>
+    <main className='h-screen w-screen bg-slate-200'>
+      <Navbar></Navbar>
+      <div className='w-full h-full flex flex-col justify-center items-center'>
+        {/* <LoginForm></LoginForm> */}
+        <LoginFormWithHooks></LoginFormWithHooks>
+      </div>
+    </main>
   );
 }

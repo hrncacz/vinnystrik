@@ -101,12 +101,15 @@ const authGet = async (
     const compare = await argon2.verify(result.passwdHash, passwd);
     if (compare === true) {
       const sessionId = uuidv4();
-      cookies.set('session-token', sessionId, { maxAge: 60000 });
+      cookies.set('session-token', sessionId, {
+        maxAge: 60000,
+        httpOnly: true,
+      });
       await prisma.session.create({
         data: { sessionUuid: sessionId, userId: result.id },
       });
-      //return res.status(200).json({ name: result.email, message: null });
-      return res.status(200).redirect('localhost:3000/');
+      return res.status(200).json({ name: result.email, message: null });
+      // return res.status(200).redirect('localhost:3000/');
     }
     return res.status(401).json({ name: null, message: 'Invalid password!' });
   }
