@@ -18,13 +18,10 @@ export default function Home() {
         <meta name='viewport' content='width=device-width, initial-scale=1' />
         <link rel='icon' href='/favicon.ico' />
       </Head>
-      <main className='h-screen w-screen bg-slate-400'>
+      <main className='h-screen w-screen bg-primary-content'>
         <Navbar></Navbar>
         <div className='w-full h-full flex flex-col justify-center items-center'>
-          <Link
-            className='py-4 px-8 font-medium bg-slate-50 rounded-md'
-            href='/auth'
-          >
+          <Link className='btn btn-primary ' href='/auth'>
             LOG IN
           </Link>
         </div>

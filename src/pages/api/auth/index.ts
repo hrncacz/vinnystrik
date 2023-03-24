@@ -5,6 +5,7 @@ import * as argon2 from 'argon2';
 import Cookies from 'cookies';
 import { z } from 'zod';
 import { v4 as uuidv4 } from 'uuid';
+import { prisma } from '@/db';
 
 const OutputGetAuth = z.object({
   name: z.string().email().nullable(),
@@ -27,8 +28,6 @@ type InputPostAuth = {
   username: string;
   password: string;
 };
-
-const prisma = new PrismaClient();
 
 export default async function handler(
   req: NextApiRequest,
@@ -100,16 +99,25 @@ const authGet = async (
   if (result) {
     const compare = await argon2.verify(result.passwdHash, passwd);
     if (compare === true) {
+      const userHasSession = await prisma.session.findFirst({
+        where: { userId: result.id },
+      });
+      if (userHasSession) {
+        return res
+          .status(401)
+          .json({
+            name: null,
+            message: `User has active session - ${userHasSession.sessionUuid}`,
+          });
+      }
       const sessionId = uuidv4();
       cookies.set('session-token', sessionId, {
         maxAge: 60000,
-        httpOnly: true,
       });
       await prisma.session.create({
         data: { sessionUuid: sessionId, userId: result.id },
       });
       return res.status(200).json({ name: result.email, message: null });
-      // return res.status(200).redirect('localhost:3000/');
     }
     return res.status(401).json({ name: null, message: 'Invalid password!' });
   }

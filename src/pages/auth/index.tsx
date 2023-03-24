@@ -1,28 +1,22 @@
 import { Inter } from 'next/font/google';
 import Navbar from '@/components/Navbar';
 import { GetServerSideProps } from 'next';
-import Cookies from 'cookies';
-import { OutputGetAuth } from '../api/auth';
-import { useState } from 'react';
-import LoginForm from '@/components/LoginForm';
 import LoginFormWithHooks from '@/components/LoginFormHook';
+import { checkSession } from '@/lib/auth';
 
 const inter = Inter({ subsets: ['latin'] });
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const cookies = new Cookies(context.req, context.res);
-  const sessionToken = cookies.get('session-token');
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  const sessionStatus = await checkSession(req.cookies);
+  if (sessionStatus === true) {
+    return { redirect: { destination: '/customer', permanent: false } };
+  }
   return { props: { data: 'test' } };
 };
 
 export default function Auth() {
-  const [loginData, setLoginData] = useState<OutputGetAuth>({
-    name: null,
-    message: null,
-  });
-
   return (
-    <main className='h-screen w-screen bg-slate-200'>
+    <main className='h-screen w-screen bg-primary-content'>
       <Navbar></Navbar>
       <div className='w-full h-full flex flex-col justify-center items-center'>
         {/* <LoginForm></LoginForm> */}
