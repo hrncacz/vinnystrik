@@ -17,7 +17,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 export default function Auth() {
   return (
     <>
-      <main className='h-screen w-screen bg-slate-200 flex justify-center items-center'>
+      <Navbar></Navbar>
+      <main className='h-screen w-screen bg-primary-content flex justify-center items-center'>
         <div className='h-2/5 w-1/5 bg-slate-300 rounded-md'>
           <form
             className='flex flex-col justify-center items-center space-y-8 w-full h-full'

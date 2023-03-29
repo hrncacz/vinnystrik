@@ -11,12 +11,13 @@ datasource db {
 }
 
 model Users {
-  id         Int      @id @default(autoincrement())
-  email      String   @unique
+  id         Int       @id @default(autoincrement())
+  email      String    @unique
   passwdHash String
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
   Session    Session?
+  Profiles   Profiles?
 }
 
 model Session {
@@ -24,4 +25,22 @@ model Session {
   sessionUuid String @unique
   sessionUser Users  @relation(fields: [userId], references: [id])
   userId      Int    @unique
+}
+
+model Profiles {
+  id            Int    @id @default(autoincrement())
+  usersProfile  Users  @relation(fields: [userId], references: [id])
+  userId        Int    @unique
+  ico           String
+  dic           String
+  firstname     String
+  lastname      String
+  street        String
+  houseNo       String
+  postalCode    String
+  city          String
+  invStreet     String
+  invHouseNo    String
+  invPostalCode String
+  invCity       String
 }

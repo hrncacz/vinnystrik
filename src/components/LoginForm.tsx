@@ -1,95 +1,83 @@
-import Link from 'next/link';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
 import { useState } from 'react';
-import { z } from 'zod';
+import { useRouter } from 'next/router';
 
-const emailZ = z.string().email().nullable();
-const passwdZ = z.string().min(4).max(16).nullable();
-
-const loginDataZ = z.object({
-  email: emailZ,
-  passwd: passwdZ,
+const LoginDataSchema = z.object({
+  email: z.string().email(),
+  passwd: z.string(),
 });
 
-type LoginData = z.infer<typeof loginDataZ>;
-type Email = z.infer<typeof emailZ>;
-type Passwd = z.infer<typeof passwdZ>;
+type LoginDataSchemaType = z.infer<typeof LoginDataSchema>;
 
 const LoginForm = () => {
-  const [emailColor, setEmailColor] = useState<string | null>(null);
-  const [emailState, setEmailState] = useState<boolean>(false);
-  const [passwdState, setPasswdState] = useState<boolean>(false);
-  const [loginData, setLoginData] = useState<LoginData>({
-    email: null,
-    passwd: null,
+  const [responseError, setResponseError] = useState<string>('');
+  const router = useRouter();
+
+  const {
+    register,
+    handleSubmit,
+    resetField,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginDataSchemaType>({
+    resolver: zodResolver(LoginDataSchema),
+    mode: 'onChange',
   });
 
-  const checkEmail = async (data: Email) => {
-    const result = await emailZ.safeParseAsync(data);
-    if (result.success === true) {
-      setEmailColor('focus:ring-green-300');
-      setEmailState(true);
-      setLoginData({ ...loginData, email: data });
-      return;
-    } else {
-      setEmailColor('focus:ring-red-300');
-      setEmailState(false);
-      setLoginData({ ...loginData, email: null });
-      return;
-    }
+  const onSubmit: SubmitHandler<LoginDataSchemaType> = async (data) => {
+    await new Promise(async (resolve) => {
+      let headers = new Headers();
+      headers.append('Content-type', 'application/json');
+      headers.append('auth-email', data.email);
+      headers.append('auth-passwd', data.passwd);
+      const res = await fetch('/api/auth', {
+        method: 'GET',
+        headers,
+      });
+      const resText = await res.json();
+      if (resText.name !== null) {
+        return router.push('/customer');
+      }
+      setResponseError(resText.message);
+      resetField('passwd');
+      return resolve(undefined);
+    });
   };
-  const checkPasswd = async (data: Passwd) => {
-    const result = await passwdZ.safeParseAsync(data);
-    if (result.success === true) {
-      setPasswdState(true);
-      setLoginData({ ...loginData, passwd: data });
-      return;
-    } else {
-      setPasswdState(false);
-      setLoginData({ ...loginData, passwd: null });
-      return;
-    }
-  };
-
-  const checkSubmit = async (data: LoginData) => {};
 
   return (
     <div className='h-2/5 w-1/5 bg-slate-300 rounded-md'>
       <form
-        className='flex flex-col justify-center items-center space-y-8 w-full h-full'
-        action=''
-        onSubmit={(e) => {
-          e.preventDefault();
-          console.log(loginData);
-          console.log(e.target);
-        }}
+        className='flex flex-col justify-center items-center space-y-4 w-full h-full'
+        onSubmit={handleSubmit(onSubmit)}
       >
         <div className='text-slate-900 text-lg font-bold'>Přihlášení</div>
+
         <input
-          name='email'
-          className={`h-10 w-4/5 bg-slate-100 rounded-md px-4 focus:outline-none focus:ring ${emailColor}`}
+          className={`h-10 w-4/5 bg-slate-100 rounded-md px-4 focus:outline-none focus:ring ${
+            errors.email && 'ring-red-400'
+          }`}
           type='text'
           placeholder='Email'
-          onChange={(e) => {
-            checkEmail(e.target.value);
-          }}
           spellCheck='false'
+          {...register('email')}
         />
         <input
-          name='passwd'
           className='h-10 w-4/5 bg-slate-100 rounded-md px-4 focus:outline-none focus:ring'
           placeholder='Heslo'
           type='password'
-          onChange={(e) => {
-            checkPasswd(e.target.value);
-          }}
+          {...register('passwd')}
         />
         <button
           type='submit'
           className='bg-blue-300 py-4 px-8 rounded-md font-medium'
-          //   disabled={emailState === false && passwdState === false}
+          disabled={errors.email && true}
         >
           Log in
         </button>
+        {responseError && (
+          <p className='text-red-500 text-center'>Error: {responseError}</p>
+        )}
       </form>
     </div>
   );

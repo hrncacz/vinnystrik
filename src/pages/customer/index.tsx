@@ -1,7 +1,7 @@
 import { Inter } from 'next/font/google';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import Link from 'next/link';
-import { checkSession } from '@/lib/auth';
+import { checkSession, refreshSessionCookie } from '@/lib/auth';
 import { Router, useRouter } from 'next/router';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -16,6 +16,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
       },
     };
   } else {
+    res = await refreshSessionCookie(req, res);
     return { props: { isAuth: sessionStatus } };
   }
 };
