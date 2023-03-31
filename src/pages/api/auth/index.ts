@@ -7,6 +7,7 @@ import { z } from 'zod';
 import { v4 as uuidv4 } from 'uuid';
 import { prisma } from '@/db';
 import createSessionCookie from '@/lib/auth/createSession';
+import logout from '@/lib/auth/logout';
 
 const OutputGetAuth = z.object({
   name: z.string().email().nullable(),
@@ -130,24 +131,27 @@ const authGet = async (
   if (result) {
     const compare = await argon2.verify(result.passwdHash, password);
     if (compare === true) {
-      const userHasSession = await prisma.session.findFirst({
+      const session = await prisma.session.findFirst({
         where: { userId: result.id },
       });
-      if (userHasSession) {
+      const now = new Date();
+      if (session !== null && session.validTill > now) {
         return res.status(401).json({
           name: null,
-          message: `User has active session - ${userHasSession.sessionUuid}`,
+          message: `User has active session - ${session.sessionUuid}`,
         });
       }
-      // const sessionId = uuidv4();
-      // cookies.set('session-token', sessionId, {
-      //   maxAge: 60000,
-      // });
-      // await prisma.session.create({
-      //   data: { sessionUuid: sessionId, userId: result.id },
-      // });
-
-      res = await createSessionCookie(req, res, result.id);
+      if (session !== null && session.validTill < now) {
+        await logout(req, res);
+      }
+      try {
+        res = await createSessionCookie(req, res, result.id);
+      } catch (error) {
+        return res.status(401).json({
+          name: null,
+          message: 'Server was unable to issue session token!',
+        });
+      }
       return res.status(200).json({ name: result.email, message: null });
     }
     return res.status(401).json({ name: null, message: 'Invalid password!' });

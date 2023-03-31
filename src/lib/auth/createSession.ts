@@ -12,11 +12,16 @@ const createSessionCookie = async (
   const cookies = new Cookies(req, res);
   const token = uuidv4();
   const validTill = new Date(new Date().getTime() + 60000).toISOString();
-  cookies.set('session-token', token, { maxAge: 60000, httpOnly: true });
-  const createSession = await prisma.session.create({
-    data: { sessionUuid: token, userId, validTill },
-  });
-  return res;
+  try {
+    await prisma.session.create({
+      data: { sessionUuid: token, userId, validTill },
+    });
+    cookies.set('session-token', token, { httpOnly: true });
+
+    return res;
+  } catch (error) {
+    throw error;
+  }
 };
 
 export default createSessionCookie;

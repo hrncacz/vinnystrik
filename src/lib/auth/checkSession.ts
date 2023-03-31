@@ -7,7 +7,27 @@ import * as argon2 from 'argon2';
 const checkSession = async (cookies: Partial<{ [key: string]: string }>) => {
   const token = cookies['session-token'];
   if (token) {
-    return true;
+    const session = await prisma.session.findFirst({
+      where: { sessionUuid: token },
+    });
+    if (session) {
+      const now = new Date();
+      if (session.validTill > now) {
+        try {
+          await prisma.session.update({
+            where: { sessionUuid: token },
+            data: {
+              validTill: new Date(new Date().getTime() + 60000).toISOString(),
+            },
+          });
+          return true;
+        } catch (error) {
+          return true;
+        }
+      }
+      return false;
+    }
+    return false;
   }
   return false;
 };

@@ -3,12 +3,14 @@ import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import Link from 'next/link';
 import refreshSessionCookie from '@/lib/auth/refreshSessionCookie';
 import checkSession from '@/lib/auth/checkSession';
+import logout from '@/lib/auth/logout';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   const sessionStatus = await checkSession(req.cookies);
-  if (!sessionStatus) {
+  if (sessionStatus === false) {
+    await logout(req, res);
     return {
       redirect: {
         destination: '/',
@@ -16,7 +18,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
       },
     };
   } else {
-    res = await refreshSessionCookie(req, res);
+    //res = await refreshSessionCookie(req, res);
     return { props: { isAuth: sessionStatus } };
   }
 };
