@@ -21,10 +21,11 @@ model Users {
 }
 
 model Session {
-  id          Int    @id @default(autoincrement())
-  sessionUuid String @unique
-  sessionUser Users  @relation(fields: [userId], references: [id])
-  userId      Int    @unique
+  id          Int      @id @default(autoincrement())
+  sessionUuid String   @unique
+  sessionUser Users    @relation(fields: [userId], references: [id])
+  userId      Int      @unique
+  validTill   DateTime @default(now())
 }
 
 model Profiles {

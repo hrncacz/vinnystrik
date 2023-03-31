@@ -6,6 +6,7 @@ import Cookies from 'cookies';
 import { z } from 'zod';
 import { v4 as uuidv4 } from 'uuid';
 import { prisma } from '@/db';
+import createSessionCookie from '@/lib/auth/createSession';
 
 const OutputGetAuth = z.object({
   name: z.string().email().nullable(),
@@ -91,32 +92,62 @@ const authGet = async (
   // });
 
   const email = inputData[emailHeaderName];
-  const passwd = inputData[passwordHeaderName];
+  const password = inputData[passwordHeaderName];
+
+  // const checkPassword = await authenticate({email, password})
+
+  // if (!checkPassword.userExists) {
+  //   return res.status(401).json({ name: null, message: 'User was not found!' });
+  // }
+  // if (!checkPassword.correctPassword) {
+  //   return res.status(401).json({ name: null, message: 'Invalid password!' });
+  // }
+
+  // const userHasSession = await prisma.session.findFirst({
+  //   where: { userId: result.id },
+  // });
+  // if (userHasSession) {
+  //   return res
+  //     .status(401)
+  //     .json({
+  //       name: null,
+  //       message: `User has active session - ${userHasSession.sessionUuid}`,
+  //     });
+  // }
+  // const sessionId = uuidv4();
+  // cookies.set('session-token', sessionId, {
+  //   maxAge: 60000,
+  // });
+  // await prisma.session.create({
+  //   data: { sessionUuid: sessionId, userId: result.id },
+  // });
+  // return res.status(200).json({ name: result.email, message: null });
+
   const result = await prisma.users.findFirst({
     where: { email: email },
   });
 
   if (result) {
-    const compare = await argon2.verify(result.passwdHash, passwd);
+    const compare = await argon2.verify(result.passwdHash, password);
     if (compare === true) {
       const userHasSession = await prisma.session.findFirst({
         where: { userId: result.id },
       });
       if (userHasSession) {
-        return res
-          .status(401)
-          .json({
-            name: null,
-            message: `User has active session - ${userHasSession.sessionUuid}`,
-          });
+        return res.status(401).json({
+          name: null,
+          message: `User has active session - ${userHasSession.sessionUuid}`,
+        });
       }
-      const sessionId = uuidv4();
-      cookies.set('session-token', sessionId, {
-        maxAge: 60000,
-      });
-      await prisma.session.create({
-        data: { sessionUuid: sessionId, userId: result.id },
-      });
+      // const sessionId = uuidv4();
+      // cookies.set('session-token', sessionId, {
+      //   maxAge: 60000,
+      // });
+      // await prisma.session.create({
+      //   data: { sessionUuid: sessionId, userId: result.id },
+      // });
+
+      res = await createSessionCookie(req, res, result.id);
       return res.status(200).json({ name: result.email, message: null });
     }
     return res.status(401).json({ name: null, message: 'Invalid password!' });

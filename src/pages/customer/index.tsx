@@ -1,8 +1,8 @@
 import { Inter } from 'next/font/google';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import Link from 'next/link';
-import { checkSession, refreshSessionCookie } from '@/lib/auth';
-import { Router, useRouter } from 'next/router';
+import refreshSessionCookie from '@/lib/auth/refreshSessionCookie';
+import checkSession from '@/lib/auth/checkSession';
 
 const inter = Inter({ subsets: ['latin'] });
 

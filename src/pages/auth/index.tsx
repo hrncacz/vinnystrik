@@ -2,7 +2,7 @@ import { Inter } from 'next/font/google';
 import Navbar from '@/components/Navbar';
 import { GetServerSideProps } from 'next';
 import LoginForm from '@/components/LoginForm';
-import { checkSession } from '@/lib/auth';
+import checkSession from '@/lib/auth/checkSession';
 
 const inter = Inter({ subsets: ['latin'] });
 

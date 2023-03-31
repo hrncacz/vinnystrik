@@ -1,13 +1,6 @@
 import Cookies from 'cookies';
 import { IncomingMessage, ServerResponse } from 'http';
-
-const checkSession = async (cookies: Partial<{ [key: string]: string }>) => {
-  const token = cookies['session-token'];
-  if (token) {
-    return true;
-  }
-  return false;
-};
+import { z } from 'zod';
 
 const refreshSessionCookie = async (
   req: IncomingMessage,
@@ -19,8 +12,4 @@ const refreshSessionCookie = async (
   return res;
 };
 
-const logout = async () => {};
-
-const isAdmin = async () => {};
-
-export { checkSession, refreshSessionCookie, logout, isAdmin };
+export default refreshSessionCookie;
