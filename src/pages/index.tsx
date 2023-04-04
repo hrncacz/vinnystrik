@@ -1,11 +1,9 @@
 import Head from 'next/head';
-import { NextRequest } from 'next/server';
-import Image from 'next/image';
 import { Inter } from 'next/font/google';
+import Image from 'next/image';
+import winePic from '/public/images/heroPhoto.webp';
 import Navbar from '@/components/Navbar';
-import { GetServerSideProps } from 'next';
-import Cookies from 'cookies';
-import Link from 'next/link';
+import CookiesAgreement from '@/components/CookiesAgreement';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -17,13 +15,29 @@ export default function Home() {
         <meta name='viewport' content='width=device-width, initial-scale=1' />
         <link rel='icon' href='/favicon.ico' />
       </Head>
-      <main className='h-screen w-screen bg-primary-content'>
-        <Navbar></Navbar>
+      <main className=''>
+        <Navbar />
         <div className='w-full h-full flex flex-col justify-center items-center'>
-          <Link className='btn btn-primary ' href='/auth'>
-            LOG IN
-          </Link>
+          <div className='hero min-h-screen bg-base-200'>
+            <div className='hero-content flex-col lg:flex-row'>
+              <Image
+                alt=''
+                src={winePic}
+                className='max-w-sm rounded-lg shadow-2xl'
+              />
+              <div>
+                <h1 className='text-5xl font-bold'>Box Office News!</h1>
+                <p className='py-6'>
+                  Provident cupiditate voluptatem et in. Quaerat fugiat ut
+                  assumenda excepturi exercitationem quasi. In deleniti eaque
+                  aut repudiandae et a id nisi.
+                </p>
+                <button className='btn btn-primary'>Get Started</button>
+              </div>
+            </div>
+          </div>
         </div>
+        <CookiesAgreement />
       </main>
     </>
   );

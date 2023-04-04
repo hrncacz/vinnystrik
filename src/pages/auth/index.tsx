@@ -3,6 +3,7 @@ import Navbar from '@/components/Navbar';
 import { GetServerSideProps } from 'next';
 import LoginForm from '@/components/LoginForm';
 import checkSession from '@/lib/auth/checkSession';
+import CookiesAgreement from '@/components/CookiesAgreement';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -16,12 +17,13 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 
 export default function Auth() {
   return (
-    <main className='h-screen w-screen bg-primary-content'>
+    <main className=''>
       <Navbar></Navbar>
-      <div className='w-full h-full flex flex-col justify-center items-center'>
+      <div className='w-screen h-screen flex flex-col justify-center items-center'>
         {/* <LoginForm></LoginForm> */}
         <LoginForm></LoginForm>
       </div>
+      <CookiesAgreement />
     </main>
   );
 }

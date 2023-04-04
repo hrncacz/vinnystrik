@@ -46,40 +46,50 @@ const LoginForm = () => {
   };
 
   return (
-    <div className='h-2/5 w-1/5 bg-slate-300 rounded-md'>
-      <form
-        className='flex flex-col justify-center items-center space-y-4 w-full h-full'
-        onSubmit={handleSubmit(onSubmit)}
-      >
-        <div className='text-slate-900 text-lg font-bold'>Přihlášení</div>
+    <form
+      className='form-control flex flex-col justify-center items-center space-y-4 bg-primary h-2/5 w-1/5 '
+      onSubmit={handleSubmit(onSubmit)}
+    >
+      <div className='text-slate-900 text-lg font-bold'>Přihlášení</div>
 
+      <label className='input-group w-4/5'>
+        <span>Email</span>
         <input
-          className={`h-10 w-4/5 bg-slate-100 rounded-md px-4 focus:outline-none focus:ring ${
-            errors.email && 'ring-red-400'
+          className={`input input-bordered overflow-hidden ${
+            errors.email && 'focus:outline-none focus:ring ring-red-400'
           }`}
           type='text'
-          placeholder='Email'
+          placeholder='user@example.com'
           spellCheck='false'
           {...register('email')}
         />
+      </label>
+      <label className='input-group w-4/5'>
+        <span>Password</span>
         <input
-          className='h-10 w-4/5 bg-slate-100 rounded-md px-4 focus:outline-none focus:ring'
-          placeholder='Heslo'
+          className='input input-bordered overflow-hidden'
+          placeholder='password'
           type='password'
           {...register('passwd')}
         />
-        <button
-          type='submit'
-          className='bg-blue-300 py-4 px-8 rounded-md font-medium'
-          disabled={errors.email && true}
-        >
-          Log in
-        </button>
-        {responseError && (
-          <p className='text-red-500 text-center'>Error: {responseError}</p>
-        )}
-      </form>
-    </div>
+      </label>
+      <button
+        type='submit'
+        className='btn btn-secondary'
+        disabled={errors.email && true}
+      >
+        Log in
+      </button>
+      {responseError && (
+        <div className='toast'>
+          <div className='alert alert-error'>
+            <div>
+              <span>Error: {responseError}</span>
+            </div>
+          </div>
+        </div>
+      )}
+    </form>
   );
 };
 

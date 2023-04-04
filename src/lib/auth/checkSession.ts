@@ -17,7 +17,7 @@ const checkSession = async (cookies: Partial<{ [key: string]: string }>) => {
           await prisma.session.update({
             where: { sessionUuid: token },
             data: {
-              validTill: new Date(new Date().getTime() + 60000).toISOString(),
+              validTill: new Date(new Date().getTime() + 120000).toISOString(),
             },
           });
           return true;

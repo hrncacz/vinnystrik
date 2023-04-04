@@ -11,16 +11,31 @@ const createSessionCookie = async (
 ) => {
   const cookies = new Cookies(req, res);
   const token = uuidv4();
-  const validTill = new Date(new Date().getTime() + 60000).toISOString();
+  const validTill = new Date(new Date().getTime() + 120000).toISOString();
   try {
+    cookies.set('session-token', token, {
+      httpOnly: true,
+      expires: new Date(new Date().getTime() + 100 * 365 * 24 * 60 * 60 * 1000),
+    });
     await prisma.session.create({
       data: { sessionUuid: token, userId, validTill },
     });
-    cookies.set('session-token', token, { httpOnly: true });
 
     return res;
   } catch (error) {
-    throw error;
+    await prisma.session.delete({
+      where: {
+        userId,
+      },
+    });
+    try {
+      await prisma.session.create({
+        data: { sessionUuid: token, userId, validTill },
+      });
+      return res;
+    } catch (error) {
+      throw error;
+    }
   }
 };
 
