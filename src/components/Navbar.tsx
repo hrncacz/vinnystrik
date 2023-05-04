@@ -1,6 +1,19 @@
+import { OutputDeleteAuth } from '@/pages/api/auth';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 const Navbar = () => {
+  const router = useRouter();
+  const logout = async () => {
+    const res = await fetch('/api/auth', {
+      method: 'DELETE',
+    });
+    const resSuccess: OutputDeleteAuth = await res.json();
+    if (resSuccess.success === true) {
+      return router.push('/auth');
+    }
+  };
+
   return (
     <div className='navbar bg-primary text-primary-content absolute left-0'>
       <div className='flex-1'>
@@ -40,6 +53,11 @@ const Navbar = () => {
           >
             <li>
               <Link href='/auth'>Login</Link>
+            </li>
+            <li>
+              <Link onClick={logout} href='/auth'>
+                Logout
+              </Link>
             </li>
           </ul>
         </div>

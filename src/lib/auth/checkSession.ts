@@ -1,11 +1,8 @@
 import { prisma } from '@/db';
-import Cookies from 'cookies';
-import { IncomingMessage, ServerResponse } from 'http';
-import { z } from 'zod';
-import * as argon2 from 'argon2';
 
 const checkSession = async (cookies: Partial<{ [key: string]: string }>) => {
   const token = cookies['session-token'];
+  console.log(`Token uuid --- ${token}`);
   if (token) {
     const session = await prisma.session.findFirst({
       where: { sessionUuid: token },
@@ -22,7 +19,7 @@ const checkSession = async (cookies: Partial<{ [key: string]: string }>) => {
           });
           return true;
         } catch (error) {
-          return true;
+          return false;
         }
       }
       return false;

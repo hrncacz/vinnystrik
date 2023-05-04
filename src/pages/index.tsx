@@ -1,11 +1,8 @@
 import Head from 'next/head';
-import { Inter } from 'next/font/google';
 import Image from 'next/image';
 import winePic from '/public/images/heroPhoto.webp';
 import Navbar from '@/components/Navbar';
 import CookiesAgreement from '@/components/CookiesAgreement';
-
-const inter = Inter({ subsets: ['latin'] });
 
 export default function Home() {
   return (

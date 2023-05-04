@@ -26,6 +26,10 @@ type OutputPostAuth = {
   message: string | null;
 };
 
+export type OutputDeleteAuth = {
+  success: boolean;
+};
+
 type InputPostAuth = {
   username: string;
   password: string;
@@ -35,9 +39,9 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (req.method === 'GET') {
-    return await authGet(req, res);
-  }
+  // if (req.method === 'GET') {
+  //   return await authGet(req, res);
+  // }
 
   switch (req.method) {
     case 'GET':
@@ -45,6 +49,9 @@ export default async function handler(
       break;
     case 'POST':
       await authPost(req, res);
+      break;
+    case 'DELETE':
+      await authDelete(req, res);
       break;
     default:
       res.status(405).json({
@@ -217,4 +224,18 @@ const authPost = async (
       .status(401)
       .json({ name: null, message: 'User was not created!' });
   }
+};
+
+const authDelete = async (
+  req: NextApiRequest,
+  res: NextApiResponse<OutputDeleteAuth>
+) => {
+  const cookies = new Cookies(req, res);
+  const sessionToken = cookies.get('session-token');
+  console.log(`DELETE TOKEN ------ ${sessionToken}`);
+  if (sessionToken) {
+    await logout(req, res);
+    return res.status(200).json({ success: true });
+  }
+  return res.status(401).json({ success: false });
 };
